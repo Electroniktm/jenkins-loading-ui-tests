@@ -40,6 +40,9 @@ tasks.withType(JavaCompile) {
 tasks.withType(Test) {
     useJUnitPlatform()
     ignoreFailures = true // сборка не падает, результаты видны в Allure
+    // прокидываем -D параметры (в т.ч. из Jenkins: remoteURL) в JVM тестов —
+    // TestBase читает их через System.getProperty(...)
+    systemProperties(System.getProperties())
 
     testLogging {
         lifecycle {

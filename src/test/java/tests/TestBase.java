@@ -2,16 +2,18 @@ package tests;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import helpers.AttachmentsExtension;
 import io.qameta.allure.selenide.AllureSelenide;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.Map;
 
-import static com.codeborne.selenide.Selenide.closeWebDriver;
-
+// расширение прикрепляет к тесту вложения (скриншот/HTML/логи/видео) и закрывает браузер:
+// через @AfterEach это не работает — allure-junit-platform к тому моменту уже закрыл test case
+@ExtendWith(AttachmentsExtension.class)
 public class TestBase {
 
     @BeforeEach
@@ -33,15 +35,12 @@ public class TestBase {
         chromeOptions.setCapability("se:cdpEnabled", false);
         chromeOptions.setCapability("selenoid:options", Map.of(
                 "enableVNC", true,
-                "enableVideo", false
+                "enableVideo", true
         ));
         Configuration.browserCapabilities = chromeOptions;
-        // браузер запускается в облачном Selenoid (как в примерах курса)
-        Configuration.remote = "https://user1:1234@selenoid.qa.guru/wd/hub";
-    }
-
-    @AfterEach
-    void afterEach() {
-        closeWebDriver();
+        // браузер запускается в облачном Selenoid (как в примерах курса);
+        // адрес можно переопределить параметром -DremoteURL=...
+        Configuration.remote = System.getProperty(
+                "remoteURL", "https://user1:1234@selenoid.qa.guru/wd/hub");
     }
 }
