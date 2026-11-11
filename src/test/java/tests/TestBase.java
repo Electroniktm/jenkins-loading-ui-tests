@@ -32,6 +32,8 @@ public class TestBase {
         Configuration.timeout = 15000;
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--disable-dev-shm-usage", "--no-sandbox");
+        // без этой capability chromedriver не собирает логи консоли браузера (получали пустой файл)
+        chromeOptions.setCapability("goog:loggingPrefs", Map.of("browser", "ALL"));
         chromeOptions.setCapability("se:cdpEnabled", false);
         chromeOptions.setCapability("selenoid:options", Map.of(
                 "enableVNC", true,

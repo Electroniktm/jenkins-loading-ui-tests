@@ -33,9 +33,10 @@ public class Attach {
     }
 
     public static void browserConsoleLogs() {
+        var logs = Selenide.getWebDriverLogs(BROWSER);
         attachAsText(
                 "Browser console logs",
-                String.join("\n", Selenide.getWebDriverLogs(BROWSER))
+                logs.isEmpty() ? "No browser console messages" : String.join("\n", logs)
         );
     }
 
